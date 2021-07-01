@@ -75,7 +75,9 @@ function App() {
           </div>
 
           <div className='mini-map'>
-            <div className='circle-group'>
+            <div
+              style={isLocked ? { 'pointer-events': 'none' } : {}}
+              className='circle-group'>
               <span
                 onClick={(e) => {
                   setTopSmallLeft(!topSmallLeft)
@@ -103,7 +105,9 @@ function App() {
             </div>
           </div>
 
-          <div className='temp'>
+          <div
+            style={isLocked ? { 'pointer-events': 'none' } : {}}
+            className='temp'>
             <i className='far fa-minus-square'></i>
             <span className='current-temp'>5</span>
             <i className='far fa-plus-square'></i>
