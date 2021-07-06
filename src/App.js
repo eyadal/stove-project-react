@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import './App.css'
 
 function App() {
   // todo 1.1 induktionsplatta med 2 små plattor och 2 mellan plattor
-  //todo 1.2 inkrementera storlek på spisplattorna
+  // todo 1.2 inkrementera storlek på spisplattorna
 
   // todo 1.3 värme styrka 1-9
-  //todo 2 wifi styrd och manuell styrd
+  // todo 2 wifi styrd och manuell styrd
   // todo 3 timer
-  //todo 4 extern kamera
+  // todo 4 extern kamera
+
   const [power, setPower] = useState(false)
   const [isLocked, setIsLocked] = useState(false)
+
   const [currentSelectedPlate, setCurrentSelectedPlate] = useState('')
-  const [test, setTest] = useState(0)
+  const [plateTemp, setPlateTemp] = useState(0)
 
   const [topSmallLeft, setTopSmallLeft] = useState({
     isActive: false,
@@ -35,17 +37,9 @@ function App() {
     isSelected: false,
   })
 
-  useEffect(() => {
-    isLocked ? console.log('stove is locked') : console.log('stove is unlocked')
-  }, [isLocked])
+  // power button settings
   const handlePower = (e) => {
     !isLocked && setPower(!power)
-
-    !isLocked
-      ? power && !isLocked
-        ? console.log('stove is off')
-        : console.log('stove is on')
-      : console.log('unlock the stove.')
 
     power &&
       topSmallLeft.isActive === true &&
@@ -56,7 +50,7 @@ function App() {
       setBtmSmallRight({ isActive: false, temperature: 3 })
     btmMediumLeft.isActive === true &&
       setBtmMediumLeft({ isActive: false, temperature: 3 })
-    test !== 0 && setTest(0)
+    plateTemp !== 0 && setPlateTemp(0)
     power && setPower(!power)
   }
 
@@ -65,16 +59,17 @@ function App() {
   }
 
   const handleCurrentTemp = (e) => {
+    //increaseTemperature
     if (e.target.attributes[1].value === 'increaseTemperature') {
-      //increaseTemperature
       switch (currentSelectedPlate) {
         case 'topL':
           topSmallLeft.temperature < 9 &&
             setTopSmallLeft({
               ...topSmallLeft,
               temperature: (topSmallLeft.temperature += 1),
+              isActive: true,
             })
-          setTest(topSmallLeft.temperature)
+          setPlateTemp(topSmallLeft.temperature)
 
           break
 
@@ -83,8 +78,9 @@ function App() {
             setTopMediumRight({
               ...topMediumRight,
               temperature: (topMediumRight.temperature += 1),
+              isActive: true,
             })
-          setTest(topMediumRight.temperature)
+          setPlateTemp(topMediumRight.temperature)
 
           break
 
@@ -93,8 +89,9 @@ function App() {
             setBtmMediumLeft({
               ...btmMediumLeft,
               temperature: (btmMediumLeft.temperature += 1),
+              isActive: true,
             })
-          setTest(btmMediumLeft.temperature)
+          setPlateTemp(btmMediumLeft.temperature)
 
           break
 
@@ -103,55 +100,9 @@ function App() {
             setBtmSmallRight({
               ...btmSmallRight,
               temperature: (btmSmallRight.temperature += 1),
+              isActive: true,
             })
-          setTest(btmSmallRight.temperature)
-
-          break
-
-        default:
-          break
-      }
-    }
-
-    if (e.target.attributes[1].value === 'decreaseTemperature') {
-      //decreaseTemperature
-      switch (currentSelectedPlate) {
-        case 'topL':
-          topSmallLeft.temperature > 0 &&
-            setTopSmallLeft({
-              ...topSmallLeft,
-              temperature: (topSmallLeft.temperature -= 1),
-            })
-          setTest(topSmallLeft.temperature)
-          break
-
-        case 'topR':
-          topMediumRight.temperature > 0 &&
-            setTopMediumRight({
-              ...topMediumRight,
-              temperature: (topMediumRight.temperature -= 1),
-            })
-          setTest(topMediumRight.temperature)
-
-          break
-
-        case 'btmL':
-          btmMediumLeft.temperature > 0 &&
-            setBtmMediumLeft({
-              ...btmMediumLeft,
-              temperature: (btmMediumLeft.temperature -= 1),
-            })
-          setTest(btmMediumLeft.temperature)
-
-          break
-
-        case 'btmR':
-          btmSmallRight.temperature > 0 &&
-            setBtmSmallRight({
-              ...btmSmallRight,
-              temperature: (btmSmallRight.temperature -= 1),
-            })
-          setTest(btmSmallRight.temperature)
+          setPlateTemp(btmSmallRight.temperature)
 
           break
 
@@ -161,38 +112,104 @@ function App() {
     }
 
     //decreaseTemperature
+    if (e.target.attributes[1].value === 'decreaseTemperature') {
+      switch (currentSelectedPlate) {
+        case 'topL':
+          topSmallLeft.temperature > 0 &&
+            setTopSmallLeft({
+              ...topSmallLeft,
+              temperature: (topSmallLeft.temperature -= 1),
+            })
+          setPlateTemp(topSmallLeft.temperature)
+          topSmallLeft.temperature === 0 &&
+            setTopSmallLeft({
+              ...topSmallLeft,
+              isActive: false,
+            })
+
+          break
+
+        case 'topR':
+          topMediumRight.temperature > 0 &&
+            setTopMediumRight({
+              ...topMediumRight,
+              temperature: (topMediumRight.temperature -= 1),
+            })
+          setPlateTemp(topMediumRight.temperature)
+          topMediumRight.temperature === 0 &&
+            setTopMediumRight({
+              ...topMediumRight,
+              isActive: false,
+            })
+
+          break
+
+        case 'btmL':
+          btmMediumLeft.temperature > 0 &&
+            setBtmMediumLeft({
+              ...btmMediumLeft,
+              temperature: (btmMediumLeft.temperature -= 1),
+            })
+          setPlateTemp(btmMediumLeft.temperature)
+          btmMediumLeft.temperature === 0 &&
+            setBtmMediumLeft({
+              ...btmMediumLeft,
+              isActive: false,
+            })
+
+          break
+
+        case 'btmR':
+          btmSmallRight.temperature > 0 &&
+            setBtmSmallRight({
+              ...btmSmallRight,
+              temperature: (btmSmallRight.temperature -= 1),
+            })
+          setPlateTemp(btmSmallRight.temperature)
+          btmSmallRight.temperature === 0 &&
+            setBtmSmallRight({
+              ...btmSmallRight,
+              isActive: false,
+            })
+
+          break
+
+        default:
+          break
+      }
+    }
   }
 
   const getCurrentTemp = (e) => {
     setCurrentSelectedPlate(e.target.attributes[1].value)
     let current = e.target.attributes[1].value
-
     if (current === 'topL') {
-      setTest(topSmallLeft.temperature)
+      setPlateTemp(topSmallLeft.temperature)
     }
     if (current === 'topR') {
-      setTest(topMediumRight.temperature)
+      setPlateTemp(topMediumRight.temperature)
     }
     if (current === 'btmL') {
-      setTest(btmSmallRight.temperature)
+      setPlateTemp(btmSmallRight.temperature)
     }
     if (current === 'btmR') {
-      setTest(btmMediumLeft.temperature)
+      setPlateTemp(btmMediumLeft.temperature)
     }
   }
 
   const selectMiniPlate = (e) => {
-    let testing = e.target.attributes[1].value
+    let theNameOfSelectedMinimapPlate = e.target.attributes[1].value
 
-    switch (testing) {
+    switch (theNameOfSelectedMinimapPlate) {
       case 'topL':
-        setTopMediumRight({
+        setTopSmallLeft({
           ...topSmallLeft,
-          isSelected: false,
+          isSelected: true,
+          isActive: !topSmallLeft.isActive,
         })
         setTopMediumRight({
           ...topMediumRight,
-          isSelected: true,
+          isSelected: false,
         })
         setBtmMediumLeft({
           ...btmMediumLeft,
@@ -204,13 +221,14 @@ function App() {
         })
         break
       case 'topR':
-        setTopMediumRight({
+        setTopSmallLeft({
           ...topSmallLeft,
           isSelected: false,
         })
         setTopMediumRight({
           ...topMediumRight,
           isSelected: true,
+          isActive: !topMediumRight.isActive,
         })
         setBtmMediumLeft({
           ...btmMediumLeft,
@@ -222,7 +240,7 @@ function App() {
         })
         break
       case 'btmL':
-        setTopMediumRight({
+        setTopSmallLeft({
           ...topSmallLeft,
           isSelected: false,
         })
@@ -233,6 +251,7 @@ function App() {
         setBtmMediumLeft({
           ...btmMediumLeft,
           isSelected: true,
+          isActive: !btmMediumLeft.isActive,
         })
         setBtmSmallRight({
           ...btmSmallRight,
@@ -240,7 +259,7 @@ function App() {
         })
         break
       case 'btmR':
-        setTopMediumRight({
+        setTopSmallLeft({
           ...topSmallLeft,
           isSelected: false,
         })
@@ -255,6 +274,7 @@ function App() {
         setBtmSmallRight({
           ...btmSmallRight,
           isSelected: true,
+          isActive: !btmSmallRight.isActive,
         })
         break
 
@@ -290,18 +310,14 @@ function App() {
                 ? 'circle-active'
                 : 'plate'
             } `}
-            id='btmL'>
-            {' '}
-          </div>
+            id='btmL'></div>
           <div
             className={`medium-plate ${
               btmMediumLeft.isActive && btmMediumLeft.temperature > 0
                 ? 'circle-active'
                 : 'plate'
             }`}
-            id='btmR'>
-            {' '}
-          </div>
+            id='btmR'></div>
         </div>
 
         <div className='stove-settings'>
@@ -341,8 +357,9 @@ function App() {
                   topSmallLeft.isActive && topSmallLeft.temperature > 0
                     ? 'circle-active'
                     : 'plate' &&
+                      power &&
                       topSmallLeft.isSelected &&
-                      topSmallLeft.temperature == 0
+                      topSmallLeft.temperature === 0
                     ? 'selected'
                     : ''
                 } `}
@@ -361,7 +378,7 @@ function App() {
                     ? 'circle-active'
                     : 'plate' &&
                       topMediumRight.isSelected &&
-                      topMediumRight.temperature == 0
+                      topMediumRight.temperature === 0
                     ? 'selected'
                     : ''
                 } `}
@@ -380,7 +397,7 @@ function App() {
                     ? 'circle-active'
                     : 'plate' &&
                       btmMediumLeft.isSelected &&
-                      btmMediumLeft.temperature == 0
+                      btmMediumLeft.temperature === 0
                     ? 'selected'
                     : ''
                 } `}
@@ -399,7 +416,7 @@ function App() {
                     ? 'circle-active'
                     : 'plate' &&
                       btmSmallRight.isSelected &&
-                      btmSmallRight.temperature == 0
+                      btmSmallRight.temperature === 0
                     ? 'selected'
                     : ''
                 } `}
@@ -421,7 +438,7 @@ function App() {
               className='far fa-minus-square'
               name='decreaseTemperature'></i>
 
-            <span className='current-temp'> {test}</span>
+            <span className='current-temp'> {plateTemp}</span>
 
             <i
               onClick={handleCurrentTemp}
