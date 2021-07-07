@@ -14,7 +14,13 @@ function App() {
   const [isLocked, setIsLocked] = useState(false)
 
   const [currentSelectedPlate, setCurrentSelectedPlate] = useState('')
-  const [plateTemp, setPlateTemp] = useState(0)
+  // const [plateTemp, setPlateTemp] = useState(0)
+  const [minimapPlateTemp, setMinimapPlateTemp] = useState({
+    topL: 0,
+    topR: 0,
+    btmL: 0,
+    btmR: 0,
+  })
 
   const [topSmallLeft, setTopSmallLeft] = useState({
     isActive: false,
@@ -44,13 +50,20 @@ function App() {
     power &&
       topSmallLeft.isActive === true &&
       setTopSmallLeft({ isActive: false, temperature: 3 })
+    setMinimapPlateTemp({ topL: 0, topR: 0, btmL: 0, btmR: 0 })
+
     topMediumRight.isActive === true &&
       setTopMediumRight({ isActive: false, temperature: 3 })
+    setMinimapPlateTemp({ topL: 0, topR: 0, btmL: 0, btmR: 0 })
+
     btmSmallRight.isActive === true &&
       setBtmSmallRight({ isActive: false, temperature: 3 })
+    setMinimapPlateTemp({ topL: 0, topR: 0, btmL: 0, btmR: 0 })
+
     btmMediumLeft.isActive === true &&
       setBtmMediumLeft({ isActive: false, temperature: 3 })
-    plateTemp !== 0 && setPlateTemp(0)
+    setMinimapPlateTemp({ topL: 0, topR: 0, btmL: 0, btmR: 0 })
+
     power && setPower(!power)
   }
 
@@ -69,7 +82,10 @@ function App() {
               temperature: (topSmallLeft.temperature += 1),
               isActive: true,
             })
-          setPlateTemp(topSmallLeft.temperature)
+          setMinimapPlateTemp({
+            ...minimapPlateTemp,
+            topL: topSmallLeft.temperature,
+          })
 
           break
 
@@ -80,7 +96,10 @@ function App() {
               temperature: (topMediumRight.temperature += 1),
               isActive: true,
             })
-          setPlateTemp(topMediumRight.temperature)
+          setMinimapPlateTemp({
+            ...minimapPlateTemp,
+            topR: topMediumRight.temperature,
+          })
 
           break
 
@@ -91,7 +110,10 @@ function App() {
               temperature: (btmMediumLeft.temperature += 1),
               isActive: true,
             })
-          setPlateTemp(btmMediumLeft.temperature)
+          setMinimapPlateTemp({
+            ...minimapPlateTemp,
+            btmL: btmMediumLeft.temperature,
+          })
 
           break
 
@@ -102,7 +124,10 @@ function App() {
               temperature: (btmSmallRight.temperature += 1),
               isActive: true,
             })
-          setPlateTemp(btmSmallRight.temperature)
+          setMinimapPlateTemp({
+            ...minimapPlateTemp,
+            btmR: btmSmallRight.temperature,
+          })
 
           break
 
@@ -120,7 +145,11 @@ function App() {
               ...topSmallLeft,
               temperature: (topSmallLeft.temperature -= 1),
             })
-          setPlateTemp(topSmallLeft.temperature)
+
+          setMinimapPlateTemp({
+            ...minimapPlateTemp,
+            topL: topSmallLeft.temperature,
+          })
           topSmallLeft.temperature === 0 &&
             setTopSmallLeft({
               ...topSmallLeft,
@@ -135,7 +164,10 @@ function App() {
               ...topMediumRight,
               temperature: (topMediumRight.temperature -= 1),
             })
-          setPlateTemp(topMediumRight.temperature)
+          setMinimapPlateTemp({
+            ...minimapPlateTemp,
+            topR: topMediumRight.temperature,
+          })
           topMediumRight.temperature === 0 &&
             setTopMediumRight({
               ...topMediumRight,
@@ -150,7 +182,11 @@ function App() {
               ...btmMediumLeft,
               temperature: (btmMediumLeft.temperature -= 1),
             })
-          setPlateTemp(btmMediumLeft.temperature)
+
+          setMinimapPlateTemp({
+            ...minimapPlateTemp,
+            btmL: btmMediumLeft.temperature,
+          })
           btmMediumLeft.temperature === 0 &&
             setBtmMediumLeft({
               ...btmMediumLeft,
@@ -165,13 +201,16 @@ function App() {
               ...btmSmallRight,
               temperature: (btmSmallRight.temperature -= 1),
             })
-          setPlateTemp(btmSmallRight.temperature)
+          setMinimapPlateTemp({
+            ...minimapPlateTemp,
+            btmR: btmSmallRight.temperature,
+          })
+
           btmSmallRight.temperature === 0 &&
             setBtmSmallRight({
               ...btmSmallRight,
               isActive: false,
             })
-
           break
 
         default:
@@ -184,16 +223,28 @@ function App() {
     setCurrentSelectedPlate(e.target.attributes[1].value)
     let current = e.target.attributes[1].value
     if (current === 'topL') {
-      setPlateTemp(topSmallLeft.temperature)
+      setMinimapPlateTemp({
+        ...minimapPlateTemp,
+        topL: topSmallLeft.temperature,
+      })
     }
     if (current === 'topR') {
-      setPlateTemp(topMediumRight.temperature)
+      setMinimapPlateTemp({
+        ...minimapPlateTemp,
+        topR: topMediumRight.temperature,
+      })
     }
     if (current === 'btmL') {
-      setPlateTemp(btmSmallRight.temperature)
+      setMinimapPlateTemp({
+        ...minimapPlateTemp,
+        btmL: btmMediumLeft.temperature,
+      })
     }
     if (current === 'btmR') {
-      setPlateTemp(btmMediumLeft.temperature)
+      setMinimapPlateTemp({
+        ...minimapPlateTemp,
+        btmR: btmSmallRight.temperature,
+      })
     }
   }
 
@@ -285,6 +336,7 @@ function App() {
 
   return (
     <>
+      <h1>Alfa Electro Stove</h1>
       <div className='stove'>
         <div className='plate-group'>
           <div
@@ -322,12 +374,14 @@ function App() {
 
         <div className='stove-settings'>
           <div className='power-lock'>
-            <i
-              onClick={handlePower}
-              className={`${power ? 'active' : ''} fas fa-power-off`}></i>
-            <i
-              onClick={handleLock}
-              className={`${isLocked ? 'active' : ''} fas fa-lock`}></i>
+            <div className='icons'>
+              <i
+                onClick={handlePower}
+                className={`${power ? 'active' : ''} fas fa-power-off`}></i>
+              <i
+                onClick={handleLock}
+                className={`${isLocked ? 'active' : ''} fas fa-lock`}></i>
+            </div>
           </div>
 
           <div className='mini-map'>
@@ -364,6 +418,7 @@ function App() {
                     : ''
                 } `}
                 name='topL'></span>
+              <span className='current-temp'>{minimapPlateTemp.topL}</span>
               <span
                 onClick={(e) => {
                   getCurrentTemp(e)
@@ -383,6 +438,7 @@ function App() {
                     : ''
                 } `}
                 name='topR'></span>
+              <span className='current-temp'>{minimapPlateTemp.topR}</span>
               <span
                 onClick={(e) => {
                   getCurrentTemp(e)
@@ -402,6 +458,7 @@ function App() {
                     : ''
                 } `}
                 name='btmL'></span>
+              <span className='current-temp'>{minimapPlateTemp.btmL}</span>
               <span
                 onClick={(e) => {
                   getCurrentTemp(e)
@@ -421,6 +478,7 @@ function App() {
                     : ''
                 } `}
                 name='btmR'></span>
+              <span className='current-temp'>{minimapPlateTemp.btmR}</span>
             </div>
           </div>
 
@@ -433,17 +491,16 @@ function App() {
                 : {}
             }
             className='temp'>
-            <i
-              onClick={handleCurrentTemp}
-              className='far fa-minus-square'
-              name='decreaseTemperature'></i>
-
-            <span className='current-temp'> {plateTemp}</span>
-
-            <i
-              onClick={handleCurrentTemp}
-              className='far fa-plus-square'
-              name='increaseTemperature'></i>
+            <div className='icons'>
+              <i
+                onClick={handleCurrentTemp}
+                className='far fa-minus-square'
+                name='decreaseTemperature'></i>
+              <i
+                onClick={handleCurrentTemp}
+                className='far fa-plus-square'
+                name='increaseTemperature'></i>
+            </div>
           </div>
         </div>
       </div>
