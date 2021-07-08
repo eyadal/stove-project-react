@@ -15,7 +15,6 @@
 
 .active {
   color: red;
-  padding: 5px;
   font-size: 0.7rem;
 }
 .selected {
@@ -23,9 +22,9 @@
 }
 .power-lock {
   display: flex;
-  align-items: center;
   width: 40%;
   margin: 5px;
+  align-items: center;
 }
 .icons {
   display: flex;
@@ -39,7 +38,6 @@
   justify-content: center;
   width: 40%;
   font-size: 1.2em;
-
   align-items: center;
 }
 .current-temp {
