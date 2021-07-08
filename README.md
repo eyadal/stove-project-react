@@ -15,4 +15,4 @@ I have ben using
 - Arrow functions / regular functions
 - Spread syntax (...) and much more...
 
-Author: @eyadal & @FaaDiiL
+Author: [Eyad Al](https://github.com/eyadal)
