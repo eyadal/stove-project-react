@@ -338,6 +338,7 @@ function App() {
     <>
       <h1>Alfa Electro Stove</h1>
       <div className='stove'>
+        {/* This is the section for the stove plates */}
         <div className='plate-group'>
           <div
             className={`small-plate ${
@@ -373,6 +374,9 @@ function App() {
         </div>
 
         <div className='stove-settings'>
+          {/* This is the section for the two buttons on the bottom left
+              The power and the lock.
+          */}
           <div className='power-lock'>
             <div className='icons'>
               <i
@@ -384,6 +388,9 @@ function App() {
             </div>
           </div>
 
+          {/* This is the section for the minimap
+              The plate circles and the temp next to them.
+          */}
           <div className='mini-map'>
             <div
               onClick={(e) => {
@@ -482,6 +489,9 @@ function App() {
             </div>
           </div>
 
+          {/* This is the section for the two buttons on the bottom right
+              The minus and the plus.
+          */}
           <div
             style={
               isLocked
